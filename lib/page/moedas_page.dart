@@ -3,6 +3,9 @@ import 'package:aula_1/page/moedas_detalhes_page.dart';
 import 'package:aula_1/repositories/moeda_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../repositories/favoritas_repository.dart';
 
 class MoedasPage extends StatefulWidget {
   const MoedasPage({Key? key}) : super(key: key);
@@ -14,6 +17,8 @@ class MoedasPage extends StatefulWidget {
 class _MoedasPageState extends State<MoedasPage> {
   List<Moeda> selecionadas = [];
   final tabela = MoedaRepository.tabela;
+  late FavoritasRepository favoritas;
+
   NumberFormat real = NumberFormat.currency(
     locale: 'pt_BR',
     name: 'R\$',
@@ -60,8 +65,17 @@ class _MoedasPageState extends State<MoedasPage> {
     );
   }
 
+  limparSelecionadas() {
+    setState(() {
+      selecionadas = [];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // favoritas = Provider.of<FavoritasRepository>(context);
+    favoritas = context.watch<FavoritasRepository>();
+
     return Scaffold(
       appBar: appBarDinamica(),
       body: ListView.separated(
@@ -80,12 +94,22 @@ class _MoedasPageState extends State<MoedasPage> {
                     child: Image.asset(tabela[index].icone),
                     width: 40,
                   ),
-            title: Text(
-              tabela[index].nome,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w500,
-              ),
+            title: Row(
+              children: [
+                Text(
+                  tabela[index].nome,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if (favoritas.lista.contains(tabela[index]))
+                  const Icon(
+                    Icons.circle,
+                    color: Colors.amber,
+                    size: 8,
+                  )
+              ],
             ),
             trailing: Text(
               real.format(tabela[index].preco),
@@ -112,7 +136,10 @@ class _MoedasPageState extends State<MoedasPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: selecionadas.isNotEmpty
           ? FloatingActionButton.extended(
-              onPressed: () {},
+              onPressed: () {
+                favoritas.saveAll(selecionadas);
+                limparSelecionadas();
+              },
               icon: const Icon(Icons.star),
               label: const Text(
                 "FAVORITAR",
