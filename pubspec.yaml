@@ -20,6 +20,7 @@ dev_dependencies:
   intl:
   flutter_lints: ^1.0.0
   provider: ^5.0.0
+  shared_preferences: ^2.0.6
 
 flutter:
   uses-material-design: true
