@@ -41,7 +41,7 @@ class _MoedasPageState extends State<MoedasPage> {
             title: Text('Usar $locale'),
             onTap: () {
               context.read<AppSettings>().setLocale(locale, name);
-              Navigator.pop(context);
+              Navigator.pop(context); // Fechar MenuButton
             },
           ),
         )
@@ -53,6 +53,9 @@ class _MoedasPageState extends State<MoedasPage> {
     if (selecionadas.isEmpty) {
       return AppBar(
         title: const Text("Cripto Moedas"),
+        actions: [
+          changeLanguageButton(),
+        ],
       );
     } else {
       return AppBar(
@@ -100,6 +103,7 @@ class _MoedasPageState extends State<MoedasPage> {
   Widget build(BuildContext context) {
     // favoritas = Provider.of<FavoritasRepository>(context);
     favoritas = context.watch<FavoritasRepository>();
+    readNumberFormat();
 
     return Scaffold(
       appBar: appBarDinamica(),

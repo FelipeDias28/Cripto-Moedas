@@ -4,7 +4,15 @@ import 'package:aula_1/repositories/favoritas_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+import 'configs/hive_config.dart';
+
+void main() async {
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Essa instrução evita que o flutter dê erro por estar executando código antes do RunApp
+
+  // Inicialização do Hive
+  await HiveConfig.start();
+
   runApp(
     MultiProvider(
       providers: [
